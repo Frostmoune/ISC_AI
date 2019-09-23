@@ -1,0 +1,55 @@
+{
+    "device": "/device:gpu:0",
+
+    "dataset": {
+        "test_dir": "/GPUFS/sysu_hpcedu_302/data/isc19/ai/segm_h5_v3_new_split/validation",
+        "test_size": 300,
+        "downsampling": 4,
+        "downsampling_mode": "center-crop",
+        "channels": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        "data_format": "channels_last",
+        "label_id": 0, 
+        "fs": "local",
+        "dtype": "float32"
+    },
+
+    "output": {
+        "image_dir": "output",
+        "checkpoint_dir": "checkpoints/bestModel"
+    },
+
+    "test": {
+        "batch": 1,
+        "scale_factor": 1.0 
+    },
+
+    "model": {
+        "Name": "UnetPlus", 
+        "Type": "UnetPlus", 
+        "Generator": { 
+            "nc": 64, 
+            "level": 32,
+            "down_block": {
+                "nb": 1,
+                "type": "RDB",
+                "nconv": 3,
+                "gc": 32
+            },
+            "up_block": {
+                "nb": 1,
+                "type": "RDB",
+                "nconv": 3,
+                "gc": 32
+            },
+            "kernel_size": 3, 
+            "normalize": true,
+            "act": "lrelu", 
+            "downsample_type": "depthwise",
+            "upsample_type": "bilinear"
+        },
+        "Loss" : {
+            "type": "weighted_mean",
+            "gan_loss": false
+        }
+    }
+}

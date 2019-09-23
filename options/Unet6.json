@@ -1,0 +1,62 @@
+{
+    "device": "/device:gpu:0",
+
+    "dataset": {
+        "train_dir": "/GPUFS/sysu_hpcedu_302/data/isc19/ai/segm_h5_v3_new_split/train",
+        "train_size": 3000,
+        "val_dir": "/GPUFS/sysu_hpcedu_302/data/isc19/ai/segm_h5_v3_new_split/validation",
+        "val_size": 300,
+        "downsampling": 4,
+        "downsampling_mode": "center-crop",
+        "channels": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+        "data_format": "channels_last",
+        "label_id": 0, 
+        "fs": "global",
+        "dtype": "float32"
+    },
+
+    "output": {
+        "image_dir": "output",
+        "disable_imsave": true,
+        "checkpoint_dir": "checkpoints/Unet6", 
+        "disable_checkpoint": false
+    },
+
+    "train": {
+        "optimizer": "opt_type=LARC-Adam,learning_rate=0.0001", 
+        "batch": 4,
+        "epoch": 1000, 
+        "scale_factor": 1.0 
+    },
+
+    "model": {
+        "Name": "Unet", 
+        "Type": "Unet", 
+        "Generator": { 
+            "nc": 64, 
+            "level": 32,
+            "down_block": {
+                "nb": 1,
+                "type": "RDB",
+                "nconv": 3,
+                "gc": 32
+            },
+            "up_block": {
+                "nb": 1,
+                "type": "RDB",
+                "nconv": 3,
+                "gc": 32
+            },
+            "kernel_size": 3, 
+            "normalize": true,
+            "act": "lrelu", 
+            "downsample_type": "conv",
+            "upsample_type": "deconv",
+            "with_aspp": false
+        },
+        "Loss" : {
+            "type": "weighted_mean",
+            "gan_loss": false
+        }
+    }
+}
